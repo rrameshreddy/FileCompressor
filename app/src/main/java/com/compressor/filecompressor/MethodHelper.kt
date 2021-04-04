@@ -24,6 +24,75 @@ import java.util.zip.GZIPOutputStream
 
 class MethodHelper {
 
+    fun browseFiles(activity: Activity) {
+        val intent = Intent()
+            .setType("*/*")
+            .setAction(Intent.ACTION_GET_CONTENT)
+
+        activity.startActivityForResult(
+            Intent.createChooser(intent, "Select a file"),
+            CompressorActivity.PICK_COMPRESS_FILE
+        )
+    }
+
+    fun browseImages(activity: Activity){
+        /*val intentGalley = Intent(Intent.ACTION_PICK)
+        intentGalley.type = "image/*"
+        activity.startActivityForResult(intentGalley, CompressorActivity.PICK_IMAGES)*/
+
+         */
+        val intent = Intent()
+            .setType("image/*")
+            .setAction(Intent.ACTION_GET_CONTENT)
+
+        activity.startActivityForResult(
+            Intent.createChooser(intent, "Select a Image"),
+            CompressorActivity.PICK_IMAGES
+        )
+    }
+    fun browseVideos(activity: Activity){
+        /*val intentGalley = Intent(Intent.ACTION_PICK)
+        intentGalley.type = "video/*"
+        activity.startActivityForResult(intentGalley, CompressorActivity.PICK_VIDEOS)*/
+         */
+        val intent = Intent()
+            .setType("video/*")
+            .setAction(Intent.ACTION_GET_CONTENT)
+
+        activity.startActivityForResult(
+            Intent.createChooser(intent, "Select a Video"),
+            CompressorActivity.PICK_VIDEOS)
+    }
+
+    fun browseGzipFiles(activity: Activity) {
+        /*val selectedUri: Uri =
+            Uri.parse(
+                Environment.getExternalStoragePublicDirectory(
+                    Environment.DIRECTORY_DCIM
+                ).absolutePath + "/Gzip/"
+            )
+        Log.i(TAG, "URI path: $selectedUri")
+        val intent = Intent(Intent.ACTION_VIEW)
+        intent.setDataAndType(selectedUri, "resource/folder")
+
+        if (intent.resolveActivityInfo(packageManager, 0) != null) {
+            startActivityForResult(intent, PICK_DECOMPRESS_FILE)
+        } else {
+            // if you reach this place, it means there is no any file
+            // explorer app installed on your device
+            Log.i(TAG, "Folder not found");
+        }*/
+        val fileintent = Intent(Intent.ACTION_GET_CONTENT)
+        fileintent.type = "resource/folder"
+        try {
+            activity.startActivityForResult(fileintent, CompressorActivity.PICK_DECOMPRESS_FILE)
+        } catch (e: ActivityNotFoundException) {
+            Log.e(
+                CompressorActivity.TAG,
+                "No activity can handle picking a file. Showing alternatives."
+            )
+        }
+    }
 
     fun compressGzipFile(file: String, gzipFile: String) {
         try {
@@ -191,53 +260,6 @@ class MethodHelper {
         return inSampleSize
     }
 
-    fun browseFiles(activity: Activity) {
-        val intent = Intent()
-            .setType("*/*")
-            .setAction(Intent.ACTION_GET_CONTENT)
-
-        activity.startActivityForResult(
-            Intent.createChooser(intent, "Select a file"),
-            CompressorActivity.PICK_COMPRESS_FILE
-        )
-    }
-
-    fun browseImages(activity: Activity){
-        val intentGalley = Intent(Intent.ACTION_PICK)
-        intentGalley.type = "image/*"
-        activity.startActivityForResult(intentGalley, CompressorActivity.PICK_IMAGES)
-    }
-
-    fun browseGzipFiles(activity: Activity) {
-        /*val selectedUri: Uri =
-            Uri.parse(
-                Environment.getExternalStoragePublicDirectory(
-                    Environment.DIRECTORY_DCIM
-                ).absolutePath + "/Gzip/"
-            )
-        Log.i(TAG, "URI path: $selectedUri")
-        val intent = Intent(Intent.ACTION_VIEW)
-        intent.setDataAndType(selectedUri, "resource/folder")
-
-        if (intent.resolveActivityInfo(packageManager, 0) != null) {
-            startActivityForResult(intent, PICK_DECOMPRESS_FILE)
-        } else {
-            // if you reach this place, it means there is no any file
-            // explorer app installed on your device
-            Log.i(TAG, "Folder not found");
-        }*/
-        val fileintent = Intent(Intent.ACTION_GET_CONTENT)
-        fileintent.type = "resource/folder"
-        try {
-            activity.startActivityForResult(fileintent, CompressorActivity.PICK_DECOMPRESS_FILE)
-        } catch (e: ActivityNotFoundException) {
-            Log.e(
-                CompressorActivity.TAG,
-                "No activity can handle picking a file. Showing alternatives."
-            )
-        }
-    }
-
     fun getCompressedOutputFile(inputFile: String): File {
         val sd_main = File(
             Environment.getExternalStoragePublicDirectory(
@@ -287,6 +309,18 @@ class MethodHelper {
             ).absolutePath + "/CompressedImages/" + File(inputFile).name.split(".")[0] + ".jpg"
         )
         return outputFile
+    }
+
+    fun getCompressedVideoOutputFile(): File {
+        val sd_main = File(
+            Environment.getExternalStoragePublicDirectory(
+                Environment.DIRECTORY_DCIM
+            ), "CompressedVideos"
+        )
+        if (!sd_main.exists())
+            sd_main.mkdirs()
+
+        return sd_main
     }
 
     fun getRealPath(context: Context, fileUri: Uri): String? {

@@ -25,6 +25,15 @@
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
+        <Button
+            android:id="@+id/compress_video"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:backgroundTint="@android:color/darker_gray"
+            android:text="Compress Video"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/compress_image"  />
 
         <Button
             android:id="@+id/gzip_compress"
@@ -34,7 +43,7 @@
             android:text="Compress"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/compress_image" />
+            app:layout_constraintTop_toBottomOf="@id/compress_video" />
 
         <Button
             android:id="@+id/gzip_decompress"
