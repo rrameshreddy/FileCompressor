@@ -21,7 +21,7 @@
             android:layout_height="wrap_content"
             android:backgroundTint="@android:color/darker_gray"
             android:text="Compress Image"
-            app:layout_constraintBottom_toBottomOf="parent"
+            android:layout_marginTop="150dp"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
@@ -34,16 +34,33 @@
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"
             app:layout_constraintTop_toBottomOf="@id/compress_image"  />
-
+        <Button
+            android:id="@+id/compress_zip"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:backgroundTint="@android:color/darker_gray"
+            android:text="Zip"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/compress_video" />
+        <Button
+            android:id="@+id/compress_unzip"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:backgroundTint="@android:color/darker_gray"
+            android:text="UnZip"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/compress_zip" />
         <Button
             android:id="@+id/gzip_compress"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:backgroundTint="@android:color/darker_gray"
-            android:text="Compress"
+            android:text="Gzip"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/compress_video" />
+            app:layout_constraintTop_toBottomOf="@id/compress_unzip" />
 
         <Button
             android:id="@+id/gzip_decompress"

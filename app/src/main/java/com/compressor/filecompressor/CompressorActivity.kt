@@ -18,6 +18,9 @@ import com.compressor.filecompressor.databinding.ActivityCompressorBinding
 import com.compressor.filecompressor.videocompressor.CompressionListener
 import com.compressor.filecompressor.videocompressor.VideoCompressor
 import com.compressor.filecompressor.videocompressor.VideoQuality
+import com.github.angads25.filepicker.model.DialogConfigs
+import com.github.angads25.filepicker.model.DialogProperties
+import com.github.angads25.filepicker.view.FilePickerDialog
 import kotlinx.coroutines.*
 import java.io.File
 import java.io.FileInputStream
@@ -71,6 +74,32 @@ class CompressorActivity : AppCompatActivity() {
 
             } else {
                 mMethodHelper.browseVideos(this)
+            }
+        })
+
+        mBinding.compressZip.setOnClickListener(View.OnClickListener {
+
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                if (managePermissions.isPermissionsGranted() == PackageManager.PERMISSION_GRANTED) {
+                    filePicker()
+                } else {
+                    managePermissions.checkPermissions()
+                }
+
+            } else {
+                filePicker()
+            }
+        })
+        mBinding.compressUnzip.setOnClickListener(View.OnClickListener {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                if (managePermissions.isPermissionsGranted() == PackageManager.PERMISSION_GRANTED) {
+                    mMethodHelper.browseZipFile(this)
+                } else {
+                    managePermissions.checkPermissions()
+                }
+
+            } else {
+                mMethodHelper.browseZipFile(this)
             }
         })
         mBinding.gzipCompress.setOnClickListener(View.OnClickListener {
@@ -204,6 +233,14 @@ class CompressorActivity : AppCompatActivity() {
                     // the user selected.
                     resultData?.data?.also { uri ->
                         processVideo(uri)
+                    }
+                }
+                PICK_ZIP_FILE -> {
+                    resultData?.data?.also { uri ->
+                        val inputFile = mMethodHelper.getRealPath(this, uri)
+                        val outputFile =mMethodHelper.getUnZipOutputFile()
+
+                        ZipManager.unzip(inputFile,outputFile.absolutePath)
                     }
                 }
             }
@@ -347,13 +384,37 @@ class CompressorActivity : AppCompatActivity() {
         return null
     }
 
+    private fun initFilePicker(): DialogProperties {
+        val properties = DialogProperties()
+
+        properties.selection_mode = DialogConfigs.MULTI_MODE;
+        properties.selection_type = DialogConfigs.FILE_SELECT;
+        properties.root = File(DialogConfigs.DEFAULT_DIR);
+        properties.error_dir = File(DialogConfigs.DEFAULT_DIR);
+        properties.offset = File(DialogConfigs.DEFAULT_DIR);
+        properties.extensions = null;
+        return properties
+    }
+
+    private fun filePicker(){
+        val dialog = FilePickerDialog(this, initFilePicker())
+        dialog.setTitle("Select a File")
+        dialog.show()
+        dialog.setDialogSelectionListener {
+            //files is the array of the paths of files selected by the Application User.
+            ZipManager.zip(it,mMethodHelper.getZipOutputFile().absolutePath)
+
+        }
+    }
+
     companion object {
         // Request code for selecting files and security permissions
         const val PICK_COMPRESS_FILE = 111
         const val PICK_DECOMPRESS_FILE = 222
         const val PICK_IMAGES = 333
         const val PICK_VIDEOS = 444
-        const val PERMISSIONS_REQUEST_CODE = 555
+        const val PICK_ZIP_FILE = 555
+        const val PERMISSIONS_REQUEST_CODE = 666
 
         const val TAG = "CompressActivity"
     }

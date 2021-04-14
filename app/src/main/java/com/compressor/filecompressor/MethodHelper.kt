@@ -18,6 +18,8 @@ import android.text.TextUtils
 import android.util.Log
 import androidx.loader.content.CursorLoader
 import java.io.*
+import java.text.SimpleDateFormat
+import java.util.*
 import java.util.zip.GZIPInputStream
 import java.util.zip.GZIPOutputStream
 
@@ -35,12 +37,18 @@ class MethodHelper {
         )
     }
 
-    fun browseImages(activity: Activity){
-        /*val intentGalley = Intent(Intent.ACTION_PICK)
-        intentGalley.type = "image/*"
-        activity.startActivityForResult(intentGalley, CompressorActivity.PICK_IMAGES)*/
+    fun browseZipFile(activity: Activity) {
+        val intent = Intent()
+            .setType("*/*")
+            .setAction(Intent.ACTION_GET_CONTENT)
 
-         */
+        activity.startActivityForResult(
+            Intent.createChooser(intent, "Select Zip file"),
+            CompressorActivity.PICK_ZIP_FILE
+        )
+    }
+
+    fun browseImages(activity: Activity){
         val intent = Intent()
             .setType("image/*")
             .setAction(Intent.ACTION_GET_CONTENT)
@@ -51,10 +59,6 @@ class MethodHelper {
         )
     }
     fun browseVideos(activity: Activity){
-        /*val intentGalley = Intent(Intent.ACTION_PICK)
-        intentGalley.type = "video/*"
-        activity.startActivityForResult(intentGalley, CompressorActivity.PICK_VIDEOS)*/
-         */
         val intent = Intent()
             .setType("video/*")
             .setAction(Intent.ACTION_GET_CONTENT)
@@ -65,23 +69,6 @@ class MethodHelper {
     }
 
     fun browseGzipFiles(activity: Activity) {
-        /*val selectedUri: Uri =
-            Uri.parse(
-                Environment.getExternalStoragePublicDirectory(
-                    Environment.DIRECTORY_DCIM
-                ).absolutePath + "/Gzip/"
-            )
-        Log.i(TAG, "URI path: $selectedUri")
-        val intent = Intent(Intent.ACTION_VIEW)
-        intent.setDataAndType(selectedUri, "resource/folder")
-
-        if (intent.resolveActivityInfo(packageManager, 0) != null) {
-            startActivityForResult(intent, PICK_DECOMPRESS_FILE)
-        } else {
-            // if you reach this place, it means there is no any file
-            // explorer app installed on your device
-            Log.i(TAG, "Folder not found");
-        }*/
         val fileintent = Intent(Intent.ACTION_GET_CONTENT)
         fileintent.type = "resource/folder"
         try {
@@ -321,6 +308,38 @@ class MethodHelper {
             sd_main.mkdirs()
 
         return sd_main
+    }
+
+    fun getZipOutputFile(): File {
+        val zipFile = File(
+            Environment.getExternalStoragePublicDirectory(
+                Environment.DIRECTORY_DCIM
+            ), "Zip"
+        )
+        if (!zipFile.exists())
+            zipFile.mkdirs()
+        val sdf = SimpleDateFormat("ddMyyyy_hhmmss")
+        val currentDate = sdf.format(Date())
+
+        val outputFile = File(
+            Environment.getExternalStoragePublicDirectory(
+                Environment.DIRECTORY_DCIM
+            ).absolutePath + "/Zip/" + currentDate + ".zip"
+        )
+
+        return outputFile
+    }
+
+    fun getUnZipOutputFile(): File {
+        val unZipFile = File(
+            Environment.getExternalStoragePublicDirectory(
+                Environment.DIRECTORY_DCIM
+            ), "UnZip"
+        )
+        if (!unZipFile.exists())
+            unZipFile.mkdirs()
+
+        return unZipFile
     }
 
     fun getRealPath(context: Context, fileUri: Uri): String? {
